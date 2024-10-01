@@ -7,4 +7,8 @@
 
 
 //I am in my branch
+int three()
+{
+	return 3;
+}
 

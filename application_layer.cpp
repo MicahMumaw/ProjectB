@@ -4,6 +4,7 @@
  *  Created on: Sep 24, 2024
  *      Author: micah
  */
+#include <cstdint>
 
 class SignalSynthesis {
 	public:

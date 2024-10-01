@@ -28,6 +28,11 @@ public:
 //Assign sine_val values;
 	void get_sineval(uint32_t);
 
+	void generate_sin();
+	void generate_square();
+	void generate_triangle();
+	void generate_delaywave();
+
 	void test();
 
 };
@@ -37,7 +42,7 @@ class DisplayDriver{
 private:
 
 public:
-
+	void update();
 };
 
 

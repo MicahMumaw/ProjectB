@@ -21,6 +21,27 @@ void get_sineval(uint32_t sine_val[])
 	}
 }
 
-void DAC_Driver::test(){
+void DAC_Driver::test()
+{
 
+}
+
+void generate_sin()
+{
+	return;
+}
+
+void generate_square()
+{
+	return;
+}
+
+void generate_triangle()
+{
+	return;
+}
+
+void generate_delay()
+{
+	return;
 }

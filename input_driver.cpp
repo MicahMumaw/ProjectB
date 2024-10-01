@@ -6,9 +6,26 @@
  */
 
 
-//I am in my branch
-int three()
-{
-	return 3;
+int readAmplitudeKnob() {
+
+    return 0;
 }
+
+
+int readFrequencyKnob() {
+
+    return 0;
+}
+
+
+int waveshapeChoice() {
+
+    return 0;
+}
+
+
+
+int phaseShift() {
+
+    return 0;
 

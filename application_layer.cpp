@@ -4,6 +4,7 @@
  *  Created on: Sep 24, 2024
  *      Author: micah
  */
+#include <cstdint>
 
 #include "application_layer.h"
 

@@ -39,7 +39,7 @@ class Semaphore {
 		int getCount(); //gets the current count of the semaphore
 
 	private:
-		int count;
+		volatile int count;
 };
 
 #endif /* GIT_PROJECTB_APPLICATION_LAYER_H_ */

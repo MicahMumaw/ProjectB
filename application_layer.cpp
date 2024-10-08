@@ -44,24 +44,32 @@ void SignalSynthesis::setDelay() {
 }
 
 
-Semaphore::Semaphore() {};
+Semaphore::Semaphore(int count = 0) : count(count) {};
 
 
 void Semaphore::post() {
+	count++;
 	return;
 }
 
 
 void Semaphore::wait() {
+	while(count <= 0) {}
 	return;
 }
 
 
 bool Semaphore::tryWait() {
-	return true;
+	if(count > 0) {
+		count--;
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 
 int Sempahore::getCount() {
-	return 0;
+	return count;
 }

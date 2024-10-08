@@ -5,11 +5,21 @@
  *      Author: micah
  */
 
+#include "main.h"
 #include "output_driver.h"
+#include "Queue.h"
+
+extern "C" void cpp_main(void);
 
 void cpp_main(void)
 {
-	DAC_Driver DAC_D;
+	//Queue OutputQueue;
+    DAC_Driver DAC_D;//&OutputQueue
 
-	DAC_D.test();
+
+    //OutputQueue.enqueue(1000);
+    while(1)
+    {
+    DAC_D.generate_sin(1000); //624999 for 1hz 625 for 1kHz
+    }
 }

@@ -6,36 +6,70 @@
  */
 #include <cstdint>
 
-class SignalSynthesis {
-	public:
-		SignalSynthesis();
-		enum Shape {SINE, SQUARE, PULSE10};
+#include "application_layer.h"
 
-		void setShape(Shape shape); //sets waveform shape
-		void setFrequency(float freq); //sets frequency in Hz
-		void setAmplitude(float amp); //sets amplitude
-		void update(); //updates method to output signal
-		void enableFollowerMode(bool enable); //enables or disables follower mode
-		void setDelay(); //sets delays for follower mode
-
-	private:
-		Shape shape;
-		float frequency;
-		float amplitude;
-		bool followerMode;
-		uint8_t delay;
-};
+SignalSynthesis::SignalSynthesis() {};
 
 
-class Semaphore {
-	public:
-		Semaphore();
+enum SignalSynthesis::Shape {SINE, SQUARE, PULSE10};
 
-		void post(); //signals (posts) the semaphore
-		void wait(); //waits (decrements) the semaphore
-		bool tryWait(); //tries to wait without blocking
-		int getCount(); //gets the current count of the semaphore
 
-	private:
-		int count;
-};
+void SignalSynthesis::setShape(Shape shape) {
+	return;
+}
+
+
+void SignalSynthesis::setFrequency(float freq) {
+	return;
+}
+
+
+void SignalSynthesis::setAmplitude(float amp) {
+	return;
+}
+
+
+void SignalSynthesis::update() {
+	return;
+}
+
+
+void SignalSynthesis::enableFollowerMode(bool enable) {
+	return;
+}
+
+
+void SignalSynthesis::setDelay() {
+	return;
+}
+
+
+Semaphore::Semaphore(int count = 0) : count(count) {};
+
+
+void Semaphore::post() {
+	count++;
+	return;
+}
+
+
+void Semaphore::wait() {
+	while(count <= 0) {}
+	return;
+}
+
+
+bool Semaphore::tryWait() {
+	if(count > 0) {
+		count--;
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+
+int Sempahore::getCount() {
+	return count;
+}

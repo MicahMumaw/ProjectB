@@ -7,34 +7,29 @@
 
 #include "main.h"
 #include "math.h"
+#include <cstdint>
+#include "stm32l4xx_hal.h"
+#include "Queue.h"
 
 #ifndef PROJECTB_OUTPUT_DRIVER_H_
 #define PROJECTB_OUTPUT_DRIVER_H_
 
-#define pi 3.1415926579
-#define MAX_SAMPLES 10
-#define res_8b 256
-#define res_12b 4096
-
+#define NS 128
 
 class DAC_Driver{
 private:
-	uint32_t sine_val[MAX_SAMPLES];
-
+	uint32_t Sin_Wave_LUT[NS];
+	//Queue* queue;
 
 public:
 //Constructor
+	//DAC_Driver(Queue*);
 	DAC_Driver();
-//Assign sine_val values;
-	void get_sineval(uint32_t);
 
-	void generate_sin();
+	void generate_sin(int);
 	void generate_square();
 	void generate_triangle();
 	void generate_delaywave();
-
-	void test();
-
 };
 
 class DisplayDriver{

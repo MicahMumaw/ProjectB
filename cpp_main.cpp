@@ -13,13 +13,16 @@ extern "C" void cpp_main(void);
 
 void cpp_main(void)
 {
-	//Queue OutputQueue;
-    DAC_Driver DAC_D;//&OutputQueue
+	Queue OutputQueue;
+    DAC_Driver DAC_D(&OutputQueue);
 
+    OutputData test1 = {1, 100, 50}; //FOR TESTING ONLY
 
-    //OutputQueue.enqueue(1000);
+	OutputQueue.enqueue(test1);
+	DAC_D.generate_wave();
+
     while(1)
     {
-    DAC_D.generate_sin(1000); //624999 for 1hz 625 for 1kHz
+
     }
 }

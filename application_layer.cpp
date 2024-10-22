@@ -5,26 +5,32 @@
  *      Author: micah
  */
 #include <cstdint>
+#include <cmath>
 
 #include "application_layer.h"
 
-SignalSynthesis::SignalSynthesis() {};
+SignalSynthesis::SignalSynthesis() : shape(SINE), freq(1000.0f), amp(1.0f), followerMode(false), delay(0) {};
 
 
 enum SignalSynthesis::Shape {SINE, SQUARE, PULSE10};
 
 
 void SignalSynthesis::setShape(Shape shape) {
+	this -> shape = shape;
 	return;
 }
 
 
 void SignalSynthesis::setFrequency(float freq) {
+	if(freq >= 1.0f && freq <= 1000.0f){
+		this -> freq = freq;
+	}
 	return;
 }
 
 
 void SignalSynthesis::setAmplitude(float amp) {
+	this -> amp = amp;
 	return;
 }
 
@@ -35,11 +41,15 @@ void SignalSynthesis::update() {
 
 
 void SignalSynthesis::enableFollowerMode(bool enable) {
+	followerMode = enable;
 	return;
 }
 
 
-void SignalSynthesis::setDelay() {
+void SignalSynthesis::setDelay(int step) {
+	if(step >= 0 && step <= 7) {
+		delay = step * (1.0f / freq) / 8;
+	}
 	return;
 }
 

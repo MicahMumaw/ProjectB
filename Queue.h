@@ -12,16 +12,21 @@
 
 #define Q_SIZE 5
 
+struct OutputData {
+	int32_t wave_choice;
+    int32_t frequency;
+    int32_t amplitude;
+};
 
 class Queue{
 private:
 	int32_t tail;
-	int32_t buffer[Q_SIZE];
+	OutputData buffer[Q_SIZE];
 
 public:
 	Queue();
-	bool enqueue(int32_t);
-	bool dequeue(int32_t*);
+	bool enqueue(OutputData);
+	bool dequeue(OutputData*);
 };
 
 

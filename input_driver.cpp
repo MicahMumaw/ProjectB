@@ -25,31 +25,43 @@ void InputDriver::update()
         return;
     }
 
-    int currentState = (HAL_GPIO_ReadPin(GPIOA, pinA) << 1) | HAL_GPIO_ReadPin(GPIOA, pinB);
+    bool A_state = LL_GPIO_ISInputPinSet(GPIOA, pinA);
+    bool B_state = LL_GPIO_ISInputPinSet(GPIOA, pinB);
 
-    int direction=0;
+    int direction = 0;
 
-    if (lastState == 0b00 && currentState == 0b01)
+    // clockwise: rising edge of B with A high
+    if (!lastB && B_state && A_state)
     {
-    	direction = 1;  // cw
+        direction = 1;
     }
-    else if (lastState == 0b01 && currentState == 0b00)
+    // counterclockwise: rising edge of B with A low
+    else if (!lastB && B_state && !A_state)
     {
-        direction = -1;  // counter cw
+        direction = -1;
     }
 
-    lastState = currentState;
+    lastB = B_state; // updating last b allows to check for edges
 
     if (direction == 1)
     {
-    	incrementCounter(); //cw
+        incrementCounter(); // cw
     }
-
     else if (direction == -1)
     {
-    	decrementCounter(); //counter cw
+        decrementCounter(); // ccw
     }
+
+    bool currentButtonState = LL_GPIO_ISInputPinSet(GPIOA, pinButton);
+
+    if (!lastButtonState && currentButtonState)  // edge detection
+    {
+         handleButtonPress();
+    }
+
+    lastButtonState = currentButtonState;
 }
+
 
 
 void InputDriver::incrementCounter()
@@ -72,6 +84,12 @@ void InputDriver::getCounter(int *counterValue)
 
 }
 
+void InputDriver::handleButtonPress()
+{
+
+    int buttonPressFlag = 999;  // example value whatever teamates want in the queue for button press can change
+    queue->enqueue(buttonPressFlag);
+}
 
 
 

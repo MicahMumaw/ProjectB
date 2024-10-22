@@ -6,6 +6,7 @@
  */
 
 #include "stm32l4xx_hal.h"
+#include "Queue.h"
 
 class InputDriver
 {
@@ -15,12 +16,15 @@ private:
     Semaphore* semaphore;
     int pinA;
     int pinB;
-    int lastState;
+    int lastB;
+    int lastButtonState;
+
+    void handleButtonPress();
 
 
 public:
 
-    InputDriver(Queue* q, Semaphore* sem, int pinA, int pinB);
+    InputDriver(Queue* q, Semaphore* sem, int pinA, int pinB, int pinButton);
 
     void update();
 

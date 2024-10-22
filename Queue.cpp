@@ -11,7 +11,6 @@
 #include "Queue.h"
 
 
-
 Queue::Queue(void)
 {
 		tail = 0;

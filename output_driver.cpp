@@ -39,12 +39,13 @@ DAC_Driver::DAC_Driver(Queue* OutputQueue)
 
     //Triangle Wave LUT generation
     for (int i = 0; i < NS / 2; ++i) {
-        Triangle_Wave_LUT[i] = (uint32_t)((2047*2 * i) / (NS / 2));
+        Triangle_Wave_LUT[i] = (uint32_t)((peak_amplitude*2 * i) / (NS / 2));
     }
 
     for (int i = NS / 2; i < NS; ++i) {
-        Triangle_Wave_LUT[i] = (uint32_t)((2047*2 * (NS - i)) / (NS / 2));
+        Triangle_Wave_LUT[i] = (uint32_t)((peak_amplitude*2 * (NS - i)) / (NS / 2));
     }
+
 }
 void DAC_Driver::generate_wave()
 {
@@ -54,24 +55,27 @@ void DAC_Driver::generate_wave()
 		switch(input.wave_choice)
 		{
 			case 1:
-			    for (int i = 0; i < NS; ++i) {
+			    for (int i = 0; i < NS; ++i)
+			    {
 			    	Wave_LUT[i] = (Sin_Wave_LUT[i]*input.amplitude)/100;
 			    }
 			break;
 
 			case 2:
-		    	for (int i = 0; i < NS; ++i) {
+		    	for (int i = 0; i < NS; ++i)
+		    	{
 		    		Wave_LUT[i] = (Square_Wave_LUT[i]*input.amplitude)/100;
 		    	}
 			break;
 
 			case 3:
-		    	for (int i = 0; i < NS; ++i) {
+		    	for (int i = 0; i < NS; ++i)
+		    	{
 		    		Wave_LUT[i] = (Triangle_Wave_LUT[i]*input.amplitude)/100;
 		    	}
 			break;
 
-			case 4:
+			default:
 
 			break;
 		}

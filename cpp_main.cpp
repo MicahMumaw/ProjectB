@@ -16,7 +16,7 @@ void cpp_main(void)
 	Queue OutputQueue;
     DAC_Driver DAC_D(&OutputQueue);
 
-    OutputData test1 = {1, 100, 50}; //FOR TESTING ONLY
+    OutputData test1 = {3, 1000, 75}; //FOR TESTING ONLY
 
 	OutputQueue.enqueue(test1);
 	DAC_D.generate_wave();

@@ -11,7 +11,6 @@
 
 #include <cstdint>
 #include <cmath>
-#include "application_layer.h"
 
 
 class SignalSynthesis {

@@ -4,15 +4,29 @@
  *  Created on: Sep 24, 2024
  *      Author: micah
  */
-#include <cstdint>
-#include <cmath>
+
 
 #include "application_layer.h"
+#include "input_driver.h"
+#include "output_driver.h"
+#include "Queue.h"
+#include "main.h"
 
-SignalSynthesis::SignalSynthesis() : shape(SINE), freq(1000.0f), amp(1.0f), followerMode(false), delay(0) {};
+
+extern DAC_HandleTypeDef hdac1;
+extern TIM_HandleTypeDef htim2;
 
 
-enum SignalSynthesis::Shape {SINE, SQUARE, PULSE10};
+Queue signalQueue;
+Semaphore signalSemaphore(0);
+
+
+InputDriver inputDriver(&signalQueue, &signalSemaphore, LL_GPIO_PIN_0, LL_GPIO_PIN_1);
+DAC_Driver outputDriver(&signalQueue);
+
+
+SignalSynthesis::SignalSynthesis(Queue* outputQueue, Semaphore* sempahore)
+	: shape(SINE), freq(1000.0f), amp(1.0f), followerMode(false), delay(0), queue(outputQueue), sem(semaphore)) {};
 
 
 void SignalSynthesis::setShape(Shape shape) {
@@ -36,7 +50,8 @@ void SignalSynthesis::setAmplitude(float amp) {
 
 
 void SignalSynthesis::update() {
-	return;
+	inputDriver.update();
+	outputDriver.generate_wave();
 }
 
 
@@ -54,7 +69,7 @@ void SignalSynthesis::setDelay(int step) {
 }
 
 
-Semaphore::Semaphore(int count = 0) : count(count) {};
+Semaphore::Semaphore(int count) : count(count) {};
 
 
 void Semaphore::post() {
@@ -80,6 +95,6 @@ bool Semaphore::tryWait() {
 }
 
 
-int Sempahore::getCount() {
+int Semaphore::getCount() {
 	return count;
 }

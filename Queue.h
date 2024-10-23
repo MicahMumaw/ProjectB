@@ -18,6 +18,7 @@ struct OutputData {
     int32_t amplitude;
 };
 
+
 class Queue{
 private:
 	int32_t tail;

@@ -2,18 +2,32 @@
  * application_layer.h
  *
  *  Created on: Oct 2, 2024
- *      Author: phant
+ *      Author: zeke u
  */
 
 #ifndef GIT_PROJECTB_APPLICATION_LAYER_H_
 #define GIT_PROJECTB_APPLICATION_LAYER_H_
 
+
+#include <cstdint>
+#include <stdexcept>
+#include <cmath>
+#include "application_layer.h"
+#include "input_driver.h"
+#include "output_driver.h"
+#include "Queue.h"
+#include "main.h"
+
+
 class SignalSynthesis {
 	public:
 		SignalSynthesis();
-		enum Shape {SINE, SQUARE, PULSE10};
-
-		void setShape(Shape shape); //sets waveform shape
+		struct Shape {
+			int32_t wave_choice;
+			int32_t frequency;
+			int32_t amplitude;
+		};
+		void setWaveChoice(int choice); //sets wave choice
 		void setFrequency(float freq); //sets frequency in Hz
 		void setAmplitude(float amp); //sets amplitude
 		void update(); //updates method to output signal
@@ -22,10 +36,10 @@ class SignalSynthesis {
 
 	private:
 		Shape shape;
-		float frequency;
-		float amplitude;
 		bool followerMode;
 		uint8_t delay;
+		Queue* queue;
+		Semaphore* sem;
 };
 
 

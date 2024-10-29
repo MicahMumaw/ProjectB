@@ -10,7 +10,13 @@
 
 
 #include <cstdint>
+#include <stdexcept>
 #include <cmath>
+#include "application_layer.h"
+#include "input_driver.h"
+#include "output_driver.h"
+#include "Queue.h"
+#include "main.h"
 
 
 class SignalSynthesis {
@@ -21,7 +27,7 @@ class SignalSynthesis {
 			int32_t frequency;
 			int32_t amplitude;
 		};
-		void setShape(Shape shape); //sets waveform shape
+		void setWaveChoice(int choice); //sets wave choice
 		void setFrequency(float freq); //sets frequency in Hz
 		void setAmplitude(float amp); //sets amplitude
 		void update(); //updates method to output signal
@@ -30,10 +36,10 @@ class SignalSynthesis {
 
 	private:
 		Shape shape;
-		float frequency;
-		float amplitude;
 		bool followerMode;
 		uint8_t delay;
+		Queue* queue;
+		Semaphore* sem;
 };
 
 

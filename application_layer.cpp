@@ -7,10 +7,6 @@
 
 
 #include "application_layer.h"
-#include "input_driver.h"
-#include "output_driver.h"
-#include "Queue.h"
-#include "main.h"
 
 
 extern DAC_HandleTypeDef hdac1;
@@ -25,27 +21,26 @@ InputDriver inputDriver(&signalQueue, &signalSemaphore, LL_GPIO_PIN_0, LL_GPIO_P
 DAC_Driver outputDriver(&signalQueue);
 
 
-SignalSynthesis::SignalSynthesis(Queue* outputQueue, Semaphore* sempahore)
-	: shape(SINE), freq(1000.0f), amp(1.0f), followerMode(false), delay(0), queue(outputQueue), sem(semaphore)) {};
+SignalSynthesis::SignalSynthesis(Queue* outputQueue, Semaphore* semaphore) : shape{0, 1000, 1}, followerMode(false), delay(0),
+		queue(outputQueue), sem(semaphore) {}
 
 
-void SignalSynthesis::setShape(Shape shape) {
-	this -> shape = shape;
-	return;
+void SignalSynthesis::setWaveChoice(int choice) {
+	if(choice >= 1 && choice <= 4) {
+		shape.wave_choice = choice;
+	}
 }
 
 
 void SignalSynthesis::setFrequency(float freq) {
-	if(freq >= 1.0f && freq <= 1000.0f){
-		this -> freq = freq;
-	}
-	return;
+    if (freq >= 1.0f && freq <= 1000.0f) {
+        shape.frequency = static_cast<int32_t>(freq);
+    }
 }
 
 
 void SignalSynthesis::setAmplitude(float amp) {
-	this -> amp = amp;
-	return;
+    shape.amplitude = static_cast<int32_t>(amp);
 }
 
 
@@ -57,15 +52,13 @@ void SignalSynthesis::update() {
 
 void SignalSynthesis::enableFollowerMode(bool enable) {
 	followerMode = enable;
-	return;
 }
 
 
 void SignalSynthesis::setDelay(int step) {
 	if(step >= 0 && step <= 7) {
-		delay = step * (1.0f / freq) / 8;
+		delay = step;
 	}
-	return;
 }
 
 
@@ -74,13 +67,12 @@ Semaphore::Semaphore(int count) : count(count) {};
 
 void Semaphore::post() {
 	count++;
-	return;
 }
 
 
 void Semaphore::wait() {
 	while(count <= 0) {}
-	return;
+	count--;
 }
 
 

@@ -9,41 +9,43 @@
 
 #include "InputQueue.h"
 #include "stm32l4xx_ll_gpio.h"
+#include "StateMachine.h"
 //#include "Semaphore.h"
+#include "KnobStateMachine.h"
+#include "stm32l4xx_hal.h"
+#include <cassert>
 
-enum ButtonState
-{
-    RELEASED,
-    PRESSED,
-    DEBOUNCING
-};
 
 class InputDriver
 {
 private:
     InputQueue* queue;
-    Semaphore* semaphore;  //
+    //Semaphore* semaphore;
     int pinA1, pinB1;  // knob 1 pins
     int pinA2, pinB2;  // knob 2 pins
     int pinA3, pinB3;  // knob 3 pins
     int pinButton1, pinButton2, pinButton3;  // button pins
 
     bool lastB1, lastB2, lastB3;  // last states for edge detection (knobs)
-    bool lastButton1, lastButton2, lastButton3;  // last states for buttons
 
-    ButtonState stateButton1, stateButton2, stateButton3;
+
+    StateMachine button1StateMachine;
+    StateMachine button2StateMachine;
+    StateMachine button3StateMachine;
+
+    KnobStateMachine stateMachineA;  // state machine for Pin A
+    KnobStateMachine stateMachineB;  // state machine for Pin B
+
 
 public:
-    InputDriver(InputQueue* q, Semaphore* sem,
-                int pinA1, int pinB1, int pinButton1,
-                int pinA2, int pinB2, int pinButton2,
-                int pinA3, int pinB3, int pinButton3);
+    InputDriver(InputQueue* q/*, Semaphore* sem*/,
+    		uint32_t pinA1, uint32_t pinB1, uint32_t pinButton1,
+			uint32_t pinA2, uint32_t pinB2, uint32_t pinButton2,
+			uint32_t pinA3, uint32_t pinB3, uint32_t pinButton3);
 
-    void update();  // main update function to read knob and button inputs
-
-    int readKnob(int pinA, int pinB, bool &lastB);
-    bool readButton(int pinButton, bool &lastButton);
-    void updateButtonState(int pinButton, bool &lastButton, ButtonState &state, bool &pressed);
+    void update();
+    int readKnob(int pinA, int pinB);
 };
+
 
 #endif /* GIT_PROJECTB_INPUT_DRIVER_H_ */

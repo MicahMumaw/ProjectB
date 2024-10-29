@@ -29,6 +29,9 @@ void SignalSynthesis::setWaveChoice(int choice) {
 	if(choice >= 1 && choice <= 4) {
 		shape.wave_choice = choice;
 	}
+	else {
+		throw std::out_of_range("Wave choice must be between 1 and 4.");
+	}
 }
 
 
@@ -36,16 +39,26 @@ void SignalSynthesis::setFrequency(float freq) {
     if (freq >= 1.0f && freq <= 1000.0f) {
         shape.frequency = static_cast<int32_t>(freq);
     }
+    else {
+    	throw std::out_of_range("Frequency must be between 1.0 and 1000.0.");
+    }
 }
 
 
 void SignalSynthesis::setAmplitude(float amp) {
-    shape.amplitude = static_cast<int32_t>(amp);
+	if(amp >= 0) {
+		shape.amplitude = static_cast<int32_t>(amp);
+	}
+	else {
+		throw std::out_of_range("Amplitude must be non-negative.");
+	}
 }
 
 
 void SignalSynthesis::update() {
 	inputDriver.update();
+	OutputData waveData{shape.wave_choice, shape.frequency, shape.amplitude};
+	queue -> enqueue(waveData);
 	outputDriver.generate_wave();
 }
 
@@ -58,6 +71,9 @@ void SignalSynthesis::enableFollowerMode(bool enable) {
 void SignalSynthesis::setDelay(int step) {
 	if(step >= 0 && step <= 7) {
 		delay = step;
+	}
+	else {
+		throw std::out_of_range("Delay step must be between 0 and 7.");
 	}
 }
 

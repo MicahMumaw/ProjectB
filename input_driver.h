@@ -4,35 +4,48 @@
  *  Created on: Oct 1, 2024
  *      Author: eegge
  */
+#ifndef INPUT_DRIVER_H_
+#define INPUT_DRIVER_H_
 
+#include "InputQueue.h"
+#include "stm32l4xx_ll_gpio.h"
+#include "StateMachine.h"
+#include "Semaphore.h"
+#include "KnobStateMachine.h"
 #include "stm32l4xx_hal.h"
-#include "Queue.h"
-#include "application_layer.h"
+#include <cassert>
+
 
 class InputDriver
 {
 private:
-    Queue* queue;
-    int counter;
+    InputQueue* queue;
     Semaphore* semaphore;
-    int pinA;
-    int pinB;
-    int lastB;
-    int lastButtonState;
+    int pinA1, pinB1;  // knob 1 pins
+    int pinA2, pinB2;  // knob 2 pins
+    int pinA3, pinB3;  // knob 3 pins
+    int pinButton1, pinButton2, pinButton3;  // button pins
 
-    void handleButtonPress();
+    bool lastB1, lastB2, lastB3;  // last states for edge detection (knobs)
+
+
+    StateMachine button1StateMachine;
+    StateMachine button2StateMachine;
+    StateMachine button3StateMachine;
+
+    KnobStateMachine stateMachineA;  // state machine for Pin A
+    KnobStateMachine stateMachineB;  // state machine for Pin B
 
 
 public:
-
-    InputDriver(Queue* q, Semaphore* sem, int pinA, int pinB, int pinButton);
+    InputDriver(InputQueue* q, Semaphore* sem,
+    		uint32_t pinA1, uint32_t pinB1, uint32_t pinButton1,
+			uint32_t pinA2, uint32_t pinB2, uint32_t pinButton2,
+			uint32_t pinA3, uint32_t pinB3, uint32_t pinButton3);
 
     void update();
-
-    void incrementCounter();
-    void decrementCounter();
-
-    void getCounter(int *counterValue);
+    int readKnob(int pinA, int pinB);
 };
+
 
 #endif /* GIT_PROJECTB_INPUT_DRIVER_H_ */

@@ -12,7 +12,9 @@
 
 #define Q_SIZE 5
 
-struct OutputData {
+struct OutputData
+{
+	int32_t wave_num;
 	int32_t wave_choice;
     int32_t frequency;
     int32_t amplitude;

@@ -10,7 +10,7 @@
 #include "InputQueue.h"
 #include "stm32l4xx_ll_gpio.h"
 #include "StateMachine.h"
-//#include "Semaphore.h"
+#include "Semaphore.h"
 #include "KnobStateMachine.h"
 #include "stm32l4xx_hal.h"
 #include <cassert>
@@ -20,7 +20,7 @@ class InputDriver
 {
 private:
     InputQueue* queue;
-    //Semaphore* semaphore;
+    Semaphore* semaphore;
     int pinA1, pinB1;  // knob 1 pins
     int pinA2, pinB2;  // knob 2 pins
     int pinA3, pinB3;  // knob 3 pins
@@ -38,7 +38,7 @@ private:
 
 
 public:
-    InputDriver(InputQueue* q/*, Semaphore* sem*/,
+    InputDriver(InputQueue* q, Semaphore* sem,
     		uint32_t pinA1, uint32_t pinB1, uint32_t pinButton1,
 			uint32_t pinA2, uint32_t pinB2, uint32_t pinButton2,
 			uint32_t pinA3, uint32_t pinB3, uint32_t pinButton3);

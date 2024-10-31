@@ -7,12 +7,11 @@
 
 #include "input_driver.h"
 
-
-InputDriver::InputDriver(InputQueue* q/*, Semaphore* sem*/, uint32_t pinA1, uint32_t pinB1,
+InputDriver::InputDriver(InputQueue* q, Semaphore* sem, uint32_t pinA1, uint32_t pinB1,
 		uint32_t pinA2, uint32_t pinB2,uint32_t pinA3, uint32_t pinB3,  uint32_t pinButton1,uint32_t pinButton2,uint32_t pinButton3)
 {
 	queue = q;
-	//semaphore = sem;
+	semaphore = sem;
 
     this->pinA1 = pinA1;
     this->pinB1 = pinB1;
@@ -37,10 +36,10 @@ InputDriver::InputDriver(InputQueue* q/*, Semaphore* sem*/, uint32_t pinA1, uint
 void InputDriver::update()
 {
 
-    //if (semaphore && !semaphore->tryWait())
-    //{
-    //    return;  // exit early if semaphore isn't ready
-    //}
+    if (semaphore->tryWait())
+    {
+       return;  // exit early if semaphore isn't flagged
+    }
 
     InputData inputData;
 
@@ -95,8 +94,6 @@ int InputDriver::readKnob(int pinA, int pinB)
 	}
 
 	    return 0; // No rotation
-
-
 }
 
 

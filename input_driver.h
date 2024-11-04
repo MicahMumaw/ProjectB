@@ -15,7 +15,6 @@
 #include "stm32l4xx_hal.h"
 #include <cassert>
 
-
 class InputDriver
 {
 private:
@@ -24,7 +23,7 @@ private:
     int pinA1, pinB1;  // knob 1 pins
     int pinA2, pinB2;  // knob 2 pins
     int pinA3, pinB3;  // knob 3 pins
-    int pinButton1, pinButton2, pinButton3;  // button pins
+    int pinButton1, pinButton2, pinButton3, pinButton4;  // button pins
 
     bool lastB1, lastB2, lastB3;  // last states for edge detection (knobs)
 
@@ -32,20 +31,28 @@ private:
     StateMachine button1StateMachine;
     StateMachine button2StateMachine;
     StateMachine button3StateMachine;
+    StateMachine button4StateMachine;
 
     KnobStateMachine stateMachineA;  // state machine for Pin A
     KnobStateMachine stateMachineB;  // state machine for Pin B
 
+    //Attempt at knob driver state machine
+    //KnobStateMachine knob1StateMachine;
+    //KnobStateMachine knob2StateMachine;
+    //KnobStateMachine knob3StateMachine;
 
 public:
     InputDriver(InputQueue* q, Semaphore* sem,
-    		uint32_t pinA1, uint32_t pinB1, uint32_t pinButton1,
-			uint32_t pinA2, uint32_t pinB2, uint32_t pinButton2,
-			uint32_t pinA3, uint32_t pinB3, uint32_t pinButton3);
+    		uint32_t pinA1, uint32_t pinB1,
+			uint32_t pinA2, uint32_t pinB2,
+			uint32_t pinA3, uint32_t pinB3,
+			uint32_t pinButton1,uint32_t pinButton2,
+			uint32_t pinButton3,uint32_t pinButton4);
 
     void update();
     int readKnob(int pinA, int pinB);
 };
+
 
 
 #endif /* GIT_PROJECTB_INPUT_DRIVER_H_ */

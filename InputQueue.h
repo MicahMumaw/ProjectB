@@ -14,12 +14,13 @@
 
 struct InputData
 {
-    int8_t frequency; // Knob 1
-    int8_t amplitude; // Knob 2
-    int8_t phase_shift; // Knob 3
-    bool wave_choice; //Wave shapes (share,triangle,...)
-    bool wave_select; // Controlling wave 1 or follow wave
-    bool echo_mode; // change if waves are a copy of one another or different
+	int8_t freq_amp; // Knob 1
+	//int8_t amplitude; // Knob 2
+	int8_t phase_shift; // Knob 3
+	bool wave_choice; //Wave shapes (share,triangle,...)
+	bool wave_select; // Controlling wave 1 or follow wave
+	bool echo_mode; // change if waves are a copy of one another or different
+	bool select_freqamp;   // Selects frequency/amplitude knob
 };
 
 class InputQueue

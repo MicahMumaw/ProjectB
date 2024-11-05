@@ -12,7 +12,6 @@
 #include <cstdint>
 #include <stdexcept>
 #include <cmath>
-#include "application_layer.h"
 #include "input_driver.h"
 #include "output_driver.h"
 #include "Queue.h"
@@ -21,7 +20,7 @@
 
 class SignalSynthesis {
 	public:
-		SignalSynthesis();
+		SignalSynthesis(Queue* outputQueue, Semaphore* semaphore);
 		struct Shape {
 			int32_t wave_choice;
 			int32_t frequency;
@@ -32,7 +31,7 @@ class SignalSynthesis {
 		void setAmplitude(float amp); //sets amplitude
 		void update(); //updates method to output signal
 		void enableFollowerMode(bool enable); //enables or disables follower mode
-		void setDelay(); //sets delays for follower mode
+		void setDelay(int step); //sets delays for follower mode
 
 	private:
 		Shape shape;
@@ -43,7 +42,7 @@ class SignalSynthesis {
 };
 
 
-class Semaphore {
+/*class Semaphore {
 	public:
 		Semaphore();
 
@@ -54,6 +53,6 @@ class Semaphore {
 
 	private:
 		volatile int count;
-};
+};*/
 
 #endif /* GIT_PROJECTB_APPLICATION_LAYER_H_ */

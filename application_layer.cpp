@@ -78,7 +78,7 @@ void SignalSynthesis::setDelay(int step) {
 }
 
 
-Semaphore::Semaphore(int count) : count(count) {};
+/*Semaphore::Semaphore(int count) : count(count) {};
 
 
 void Semaphore::post() {
@@ -105,4 +105,4 @@ bool Semaphore::tryWait() {
 
 int Semaphore::getCount() {
 	return count;
-}
+}*/

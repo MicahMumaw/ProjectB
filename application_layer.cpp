@@ -46,7 +46,6 @@ void Application::configureChannel1(int waveType, float freq, float amp) {
 	assert(waveType >= kMinWaveType && waveType <= kMaxWaveType);
 	assert(freq >= kMinFrequency && freq <= kMaxFrequency);
 	assert(amp >= 0);
-
 	channel1.setWaveChoice(waveType);
 	channel1.setFrequency(freq);
 	channel1.setAmplitude(amp);
@@ -57,7 +56,6 @@ void Application::configureChannel2(int waveType, float freq, float amp) {
 	assert(waveType >= kMinWaveType && waveType <= kMaxWaveType);
 	assert(freq >= kMinFrequency && freq <= kMaxFrequency);
 	assert(amp >= 0);
-
 	channel2.setWaveChoice(waveType);
 	channel2.setFrequency(freq);
 	channel2.setAmplitude(amp);
@@ -84,13 +82,8 @@ void Application::enableFollowerModeChannel2(bool enable) {
 
 
 void Application::setDelayChannel2(int step) {
-	if(step >= 0 && step <= 7) {
-		delayChannel2 = static_cast<uint8_t>(step);
-
-	}
-	else {
-		throw std::out_of_range("Delay step must be between 0 and 7.");
-	}
+	assert(step >= 0 && step <= 7);
+	delayChannel2 = static_cast<uint8_t>(step);
 }
 
 

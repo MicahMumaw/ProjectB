@@ -10,11 +10,12 @@
 
 
 #include <cstdint>
-#include <stdexcept>
 #include <cmath>
+#include <casserts>
 #include "input_driver.h"
 #include "output_driver.h"
 #include "Queue.h"
+#include "Semaphore.h"
 #include "main.h"
 
 
@@ -26,33 +27,51 @@ class SignalSynthesis {
 			int32_t frequency;
 			int32_t amplitude;
 		};
-		void setWaveChoice(int choice); //sets wave choice
+		void setWaveChoice(int waveType); //sets wave choice
 		void setFrequency(float freq); //sets frequency in Hz
 		void setAmplitude(float amp); //sets amplitude
 		void update(); //updates method to output signal
-		void enableFollowerMode(bool enable); //enables or disables follower mode
-		void setDelay(int step); //sets delays for follower mode
 
 	private:
 		Shape shape;
-		bool followerMode;
-		uint8_t delay;
 		Queue* queue;
 		Semaphore* sem;
 };
 
 
-/*class Semaphore {
-	public:
-		Semaphore();
+class Application {
+public:
+	Application(Queue* outputQueue1, Queue* outputQueue2, Semaphore* semaphore1, Semaphore* semaphore2);
+	void configureChannel1(int waveType, float freq, float amp);
+	void configureChannel2(int waveType, float freq, float amp);
+	void updateChannels();
+	void enableFollowerModeChannel2(bool enable);
+	void setDelayChannel2(int step);
 
-		void post(); //signals (posts) the semaphore
-		void wait(); //waits (decrements) the semaphore
-		bool tryWait(); //tries to wait without blocking
-		int getCount(); //gets the current count of the semaphore
+private:
+	SignalSynthesis channel1;
+	SignalSynthesis channel2;
+	bool followerModeChannel2;
+	uint8_t delayChannel2;
+	float kMaxFrequency = 1000.0f;
+	float kMinFrequency = 1.0f;
+	int kMinWaveType = 1;
+	int kMaxWaveType = 4;
+};
 
-	private:
-		volatile int count;
-};*/
+
+
+
+
+
+
+
+
+
+
+
+
+};
+
 
 #endif /* GIT_PROJECTB_APPLICATION_LAYER_H_ */

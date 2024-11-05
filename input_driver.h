@@ -36,10 +36,6 @@ private:
     KnobStateMachine stateMachineA;  // state machine for Pin A
     KnobStateMachine stateMachineB;  // state machine for Pin B
 
-    //Attempt at knob driver state machine
-    //KnobStateMachine knob1StateMachine;
-    //KnobStateMachine knob2StateMachine;
-    //KnobStateMachine knob3StateMachine;
 
 public:
     InputDriver(InputQueue* q, Semaphore* sem,
@@ -50,7 +46,7 @@ public:
 			uint32_t pinButton3,uint32_t pinButton4);
 
     void update();
-    int readKnob(int pinA, int pinB);
+    int8_t readKnob(int pinA, int pinB);
 };
 
 

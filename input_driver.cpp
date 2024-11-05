@@ -4,11 +4,39 @@
  *  Created on: Sep 24, 2024
  *      Author: micah
  */
-
+/**
+ * @file InputDriver.cpp
+ * @brief Implementation of the InputDriver class.
+ *
+ * This class is responsible for managing the input from various knobs and buttons.
+ * It reads the values of the knobs and buttons, processes the input, and enqueues
+ * the data for further processing.
+ *
+ * @date Created on: Nov 3, 2024
+ * @author eegge
+ */
 #include "input_driver.h"
-
-InputDriver::InputDriver(InputQueue* q, Semaphore* sem, uint32_t pinA1, uint32_t pinB1,
-		uint32_t pinA2, uint32_t pinB2,uint32_t pinA3, uint32_t pinB3,  uint32_t pinButton1,uint32_t pinButton2,uint32_t pinButton3,uint32_t pinButton4)
+/**
+ * @brief Constructs an InputDriver object.
+ *
+ * Initializes the InputDriver with the provided parameters for the input queue,
+ * semaphore, knob pins, and button pins.
+ *
+ * @param q Pointer to the InputQueue object for handling input data.
+ * @param sem Pointer to the Semaphore object for synchronization.
+ * @param pinA1 Pin number for the first knob's A signal.
+ * @param pinB1 Pin number for the first knob's B signal.
+ * @param pinA2 Pin number for the second knob's A signal.
+ * @param pinB2 Pin number for the second knob's B signal.
+ * @param pinA3 Pin number for the third knob's A signal.
+ * @param pinB3 Pin number for the third knob's B signal.
+ * @param pinButton1 Pin number for the first button.
+ * @param pinButton2 Pin number for the second button.
+ * @param pinButton3 Pin number for the third button.
+ * @param pinButton4 Pin number for the fourth button.
+ */
+InputDriver::InputDriver(InputQueue* q, Semaphore* sem, uint32_t pinA1, uint32_t pinB1, // @suppress("Symbol shadowing")
+		uint32_t pinA2, uint32_t pinB2,uint32_t pinA3, uint32_t pinB3,  uint32_t pinButton1,uint32_t pinButton2,uint32_t pinButton3,uint32_t pinButton4) // @suppress("Symbol shadowing")
 {
 	queue = q;
 	semaphore = sem;
@@ -29,12 +57,17 @@ InputDriver::InputDriver(InputQueue* q, Semaphore* sem, uint32_t pinA1, uint32_t
     this->pinButton3 = pinButton3;
     this->pinButton4 = pinButton4;
 
-
-
-    //lastB1 = lastB2 = lastB3 = true;
 }
+/**
+ * @brief Updates the input driver state and processes input from knobs and buttons.
+ *
+ * This method reads the current state of the knobs and buttons, updates the input data,
+ * and enqueues it if there are changes. It utilizes state machines for each button to
+ * determine their current states.
+ */
 void InputDriver::update()
 {
+	LL_GPIO_TogglePin(GPIOA, GPIO_PIN_11);
     if (semaphore->tryWait())
     {
         return;  // exit early if semaphore isn't flagged
@@ -42,9 +75,21 @@ void InputDriver::update()
 
     InputData inputData;
 
-    // read knob values and then store in inputData struct
+    // reads return values and make sure then are as expected. before placing them in struct
     inputData.freq_amp = readKnob(pinA1, pinB1);
     inputData.phase_shift = readKnob(pinA2, pinB2);
+
+    int8_t freqAmpChange = readKnob(pinA1, pinB1);
+       if (freqAmpChange >=-1 || freqAmpChange<=1)
+       {
+           inputData.freq_amp = freqAmpChange;
+       }
+
+       int8_t phaseShiftChange = readKnob(pinA2, pinB2);
+       if (phaseShiftChange >=-1 || phaseShiftChange<=1)
+       {
+           inputData.phase_shift = phaseShiftChange;
+       }
 
 
     // read button values
@@ -74,8 +119,19 @@ void InputDriver::update()
         queue->enqueue(inputData);
     }
 }
-
-int InputDriver::readKnob(int pinA, int pinB)
+/**
+ * @brief Reads the state of a knob based on its A and B signal pins.
+ *
+ * This method uses state machines to determine the direction of the knob's rotation.
+ *
+ * @param pinA The pin number for the knob's A signal.
+ * @param pinB The pin number for the knob's B signal.
+ * @return
+ *   - 1 if the knob is rotated clockwise,
+ *   - -1 if rotated counterclockwise,
+ *   - 0 if there is no rotation.
+ */
+int8_t InputDriver::readKnob(int pinA, int pinB)
 {
     stateMachineA.AdvanceState(LL_GPIO_IsInputPinSet(GPIOA, pinA) ? 1 : 0);
     stateMachineB.AdvanceState(LL_GPIO_IsInputPinSet(GPIOA, pinB) ? 1 : 0);

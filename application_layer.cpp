@@ -9,68 +9,84 @@
 #include "application_layer.h"
 
 
-extern DAC_HandleTypeDef hdac1;
-extern TIM_HandleTypeDef htim2;
-
-
-Queue signalQueue;
-Semaphore signalSemaphore(0);
-
-
-InputDriver inputDriver(&signalQueue, &signalSemaphore, LL_GPIO_PIN_0, LL_GPIO_PIN_1);
-DAC_Driver outputDriver(&signalQueue);
-
-
 SignalSynthesis::SignalSynthesis(Queue* outputQueue, Semaphore* semaphore) : shape{0, 1000, 1}, followerMode(false), delay(0),
 		queue(outputQueue), sem(semaphore) {}
 
 
-void SignalSynthesis::setWaveChoice(int choice) {
-	if(choice >= 1 && choice <= 4) {
-		shape.wave_choice = choice;
-	}
-	else {
-		throw std::out_of_range("Wave choice must be between 1 and 4.");
-	}
+void SignalSynthesis::setWaveChoice(int waveType) {
+	shape.wave_choice = waveType;
 }
 
 
 void SignalSynthesis::setFrequency(float freq) {
-    if (freq >= 1.0f && freq <= 1000.0f) {
-        shape.frequency = static_cast<int32_t>(freq);
-    }
-    else {
-    	throw std::out_of_range("Frequency must be between 1.0 and 1000.0.");
-    }
+	shape.frequency = freq;
+
 }
 
 
 void SignalSynthesis::setAmplitude(float amp) {
-	if(amp >= 0) {
-		shape.amplitude = static_cast<int32_t>(amp);
-	}
-	else {
-		throw std::out_of_range("Amplitude must be non-negative.");
-	}
+	shape.amplitude = amp;
 }
 
 
 void SignalSynthesis::update() {
-	inputDriver.update();
-	OutputData waveData{shape.wave_choice, shape.frequency, shape.amplitude};
+	Shape waveData{shape.wave_choice, shape.frequency, shape.amplitude};
 	queue -> enqueue(waveData);
-	outputDriver.generate_wave();
+	if(sem) {
+		sem -> signal();
+	}
 }
 
 
-void SignalSynthesis::enableFollowerMode(bool enable) {
-	followerMode = enable;
+Application::Application(Queue* outputQueue1, Queue* outputQueue2, Semaphore* semaphore1, Semaphore* semaphore2)
+	: channel1(outputQueue1, semaphore1), channel2(outputQueue2, semaphore2), followerModeChannel2(false), delayChannel2(0) {}
+
+
+void Application::configureChannel1(int waveType, float freq, float amp) {
+	assert(waveType >= kMinWaveType && waveType <= kMaxWaveType);
+	assert(freq >= kMinFrequency && freq <= kMaxFrequency);
+	assert(amp >= 0);
+
+	channel1.setWaveChoice(waveType);
+	channel1.setFrequency(freq);
+	channel1.setAmplitude(amp);
 }
 
 
-void SignalSynthesis::setDelay(int step) {
+void Application::configureChannel2(int waveType, float freq, float amp) {
+	assert(waveType >= kMinWaveType && waveType <= kMaxWaveType);
+	assert(freq >= kMinFrequency && freq <= kMaxFrequency);
+	assert(amp >= 0);
+
+	channel2.setWaveChoice(waveType);
+	channel2.setFrequency(freq);
+	channel2.setAmplitude(amp);
+}
+
+
+void Application::updateChannels() {
+	channel1.update();
+	if(followerModeChannel2) {
+		channel2.setWaveChoice(channel1.shape.wave_choice);
+		channel2.setFrequency(channel1.shape.frequency);
+		channel2.setAmplitude(channel1.shape.amplitude);
+		float period = 1.0f / channel1.shape.frequency;
+		int delaySamples = static_cast<int>(delayChannel2 * (period / 8.0f) * 20000);
+		channel2.setDelay(delaySamples);
+	}
+	channel2.update();
+}
+
+
+void Application::enableFollowerModeChannel2(bool enable) {
+	followerModeChannel2 = enable;
+}
+
+
+void Application::setDelayChannel2(int step) {
 	if(step >= 0 && step <= 7) {
-		delay = step;
+		delayChannel2 = static_cast<uint8_t>(step);
+
 	}
 	else {
 		throw std::out_of_range("Delay step must be between 0 and 7.");
@@ -78,31 +94,11 @@ void SignalSynthesis::setDelay(int step) {
 }
 
 
-Semaphore::Semaphore(int count) : count(count) {};
 
 
-void Semaphore::post() {
-	count++;
-}
 
 
-void Semaphore::wait() {
-	while(count <= 0) {}
-	count--;
-}
 
 
-bool Semaphore::tryWait() {
-	if(count > 0) {
-		count--;
-		return true;
-	}
-	else {
-		return false;
-	}
-}
 
 
-int Semaphore::getCount() {
-	return count;
-}

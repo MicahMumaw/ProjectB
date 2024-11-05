@@ -9,8 +9,7 @@
 #include "application_layer.h"
 
 
-SignalSynthesis::SignalSynthesis(Queue* outputQueue, Semaphore* semaphore) : shape{0, 1000, 1}, followerMode(false), delay(0),
-		queue(outputQueue), sem(semaphore) {}
+SignalSynthesis::SignalSynthesis(Queue* outputQueue, Semaphore* semaphore) : shape{0, 1000, 1}, queue(outputQueue), sem(semaphore) {}
 
 
 void SignalSynthesis::setWaveChoice(int waveType) {

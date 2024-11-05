@@ -45,6 +45,18 @@ private:
     KnobStateMachine stateMachineB;  // state machine for Pin B
 
 
+    const uint16_t phase_shiftA = LL_GPIO_PIN_0;
+    const uint16_t phase_shiftB = LL_GPIO_PIN_0;
+    GPIO_TypeDef* phase_shift_port = GPIOA;
+
+    const uint16_t F_knobA = LL_GPIO_PIN_9;
+    const uint16_t F_knobB = LL_GPIO_PIN_10;
+    GPIO_TypeDef* F_knob_port = GPIOA;
+
+    const uint16_t A_knobA = LL_GPIO_PIN_12;
+    const uint16_t A_knobB = LL_GPIO_PIN_2;
+    GPIO_TypeDef* A_knob_port = GPIOA;
+
 public:
     /**
          * @brief Constructs an InputDriver object with specified pins and shared resources.

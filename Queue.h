@@ -14,10 +14,12 @@
 
 struct OutputData
 {
-	int32_t wave_num;
-	int32_t wave_choice;
-    int32_t frequency;
-    int32_t amplitude;
+	uint32_t wave_num;
+	uint32_t wave_choice;
+    uint32_t frequency;
+    uint32_t amplitude;
+    uint32_t phase_shift;
+    bool follow_mode;
 };
 
 

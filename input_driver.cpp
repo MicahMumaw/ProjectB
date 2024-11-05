@@ -8,7 +8,7 @@
 #include "input_driver.h"
 
 InputDriver::InputDriver(InputQueue* q, Semaphore* sem, uint32_t pinA1, uint32_t pinB1,
-		uint32_t pinA2, uint32_t pinB2,uint32_t pinA3, uint32_t pinB3,  uint32_t pinButton1,uint32_t pinButton2,uint32_t pinButton3)
+		uint32_t pinA2, uint32_t pinB2, uint32_t pinA3, uint32_t pinB3,  uint32_t pinButton1,uint32_t pinButton2,uint32_t pinButton3)
 {
 	queue = q;
 	semaphore = sem;
@@ -44,9 +44,9 @@ void InputDriver::update()
     InputData inputData;
 
     // read knob values and then store in inputData struct
-    inputData.frequency = readKnob(pinA1, pinB1);
-    inputData.amplitude = readKnob(pinA2, pinB2);
-    inputData.phase_shift = readKnob(pinA3, pinB3);
+    inputData.frequency = readKnob(F_knobA, F_knobB);
+    inputData.amplitude = readKnob(A_knobA, A_knobB);
+    //inputData.phase_shift = readKnob(phase_shiftA, phase_shiftB);
 
     // read button values
     button1StateMachine.AdvanceState(LL_GPIO_IsInputPinSet(GPIOA, pinButton1) ? 1 : 0);
@@ -59,14 +59,14 @@ void InputDriver::update()
     inputData.echo_mode = button3StateMachine.Output();
 
 
-    assert(inputData.frequency >= -1 && inputData.frequency <= 1);
-    assert(inputData.amplitude >= -1 && inputData.amplitude <= 1);
-    assert(inputData.phase_shift >= -1 && inputData.phase_shift <= 1);
+    //assert(inputData.frequency >= -1 && inputData.frequency <= 1);
+    //assert(inputData.amplitude >= -1 && inputData.amplitude <= 1);
+    //assert(inputData.phase_shift >= -1 && inputData.phase_shift <= 1);
 
 
-    assert(inputData.wave_choice == 0 || inputData.wave_choice == 1);
-    assert(inputData.wave_select == 0 || inputData.wave_select == 1);
-    assert(inputData.echo_mode == 0 || inputData.echo_mode == 1);
+    //assert(inputData.wave_choice == 0 || inputData.wave_choice == 1);
+    //assert(inputData.wave_select == 0 || inputData.wave_select == 1);
+    //assert(inputData.echo_mode == 0 || inputData.echo_mode == 1);
 
     // enqueue the struct with updated input data only if a change accures
     if (inputData.frequency != 0 || inputData.amplitude != 0 || inputData.phase_shift != 0 || inputData.wave_choice || inputData.wave_select || inputData.echo_mode)
@@ -84,7 +84,7 @@ int InputDriver::readKnob(int pinA, int pinB)
 	int8_t outputA = stateMachineA.Output();
 	int8_t outputB = stateMachineB.Output();
 
-	if (outputA == -1 && outputB ==0 )
+	if (outputA == -1 && outputB == 0 )
 	{
 		return 1; // Clockwise
 	}
